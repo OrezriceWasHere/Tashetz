@@ -99,3 +99,9 @@ ENV/
 
 # mypy
 .mypy_cache/
+
+
+.exe
+.txt
+.bat
+.ps10
