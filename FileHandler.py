@@ -3,7 +3,7 @@ from shutil import copy2
 
 
 # Directories constants
-GLOBAL_TASHETZ_DIRECTORY = os.path.join("D:\\", "Tashetz")
+GLOBAL_TASHETZ_DIRECTORY = os.path.join("F:\\", "Tashetz")
 ANALYSIS_DIRECTORY = os.path.join(GLOBAL_TASHETZ_DIRECTORY, "Analysis")
 ANALYSIS_TEXT_FILE = "analysis.txt"
 GOOGLE_TEXT_FILE = "google.txt"

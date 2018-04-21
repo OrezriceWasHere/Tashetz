@@ -105,3 +105,4 @@ ENV/
 .txt
 .bat
 .ps10
+test.py
