@@ -5,6 +5,7 @@ from LinearLine import *
 from os.path import join
 from FileHandler import *
 from Mathematics import *
+import numpy
 import OCRhandler
 import json
 import ntpath
@@ -15,11 +16,19 @@ import os
 # Input source flag
 IS_READING_FROM_GOOGLE = False
 
-
 # Tashetz dimensions constants
 ROWS = 12
 COLS = 15
 
+# All cells with two definitions
+DOUBLE_DEFINITION_SQUARES = (
+    (11, 4),
+    (9, 8),
+    (9, 1),
+    (7, 3),
+    (4, 1),
+    (2, 9)
+)
 
 def readLine(dict_word):
 
@@ -36,7 +45,7 @@ def getParseImageData():
 
     if IS_READING_FROM_GOOGLE:
 
-        return [OCRhandler.parseTashets(join(GLOBAL_TASHETZ_DIRECTORY,file)).encode("utf-8") for file in LIST_IMAGES]
+        return [OCRhandler.parseTashets(join(GLOBAL_TASHETZ_DIRECTORY,file)) for file in LIST_IMAGES]
 
 
     findFileName = lambda dir : os.path.splitext(ntpath.basename(dir))[0]
@@ -81,24 +90,25 @@ def getDimensionAverage(line):
     return average(x_dimension), average(y_dimension)
 
 
-#   Words do not return sorted to squares. Tashetz has to handle it.
-#   You take the upper right corner of the square and find closest word.
-#   From there, you take the middle of the rectangle of the word and find words
-#   in the same row.
-#   Then you go one row down and do the same logic
-def sortWordsInsideSquare(list_words_inside_square, square_x_line, square_y_line):
+
+def getLinesInSquare(list_words_inside_square, square_x_line, square_y_line):
 
     if not list_words_inside_square:
         pass
 
+
+    import copy
+    hard_copy_list_words_inside_square = copy.deepcopy(list_words_inside_square)
+
     unsorted_words = list_words_inside_square
     sorted_words = []
+    list_lines_word = []
 
-    upper_right_corner_of_square = {"x" : square_x_line.x(list_words_inside_square[0]["sqaure"][0] + 1),
-                                    "y" : square_y_line.x(list_words_inside_square[0]["sqaure"][1])}
+    upper_right_corner_of_square = {"x" : square_x_line.x(list_words_inside_square[0]["sqaure"]["x"]),
+                                    "y" : square_y_line.x(list_words_inside_square[0]["sqaure"]["y"])}
 
-    upper_left_corner_of_square = {"x" : square_x_line.x(list_words_inside_square[0]["sqaure"][0]),
-                                   "y" : square_y_line.x(list_words_inside_square[0]["sqaure"][1]) }
+    upper_left_corner_of_square = {"x" : square_x_line.x(list_words_inside_square[0]["sqaure"]["x"] - 1),
+                                   "y" : square_y_line.x(list_words_inside_square[0]["sqaure"]["y"]) }
 
 
     while unsorted_words:
@@ -125,25 +135,65 @@ def sortWordsInsideSquare(list_words_inside_square, square_x_line, square_y_line
         all_words_in_line = filter(lambda item: item["distance"] != Linearline.NO_INTERSECTION, all_words_in_line)
 
         if all_words_in_line:
+
             # Sort the words in coorect order
             all_words_in_line = sorted(all_words_in_line, key=lambda item: item["distance"])
 
             # We No Longer need the "distance"
             all_words_in_line = [word["word"] for word in all_words_in_line]
 
+            one_item_dictionary_list = list()
+            one_item_dictionary_list.insert(0, starting_row_word)
+
+            # One Line further
+            list_lines_word.append(one_item_dictionary_list + all_words_in_line)
+
             # These words are fine!!!
             sorted_words += all_words_in_line
             for word in all_words_in_line:
                 unsorted_words.remove(word)
+
+        else:
+
+            one_item_dictionary_list = list()
+            one_item_dictionary_list.insert(0, starting_row_word)
+
+            list_lines_word.append(one_item_dictionary_list)
+
 
         # Go to next line
         word_height = distance(starting_row_word['boundingPoly']['vertices'][1],
                                starting_row_word['boundingPoly']['vertices'][2])
         upper_right_corner_of_square['y'] += word_height
 
+    return list_lines_word
+
+def findTwoDefinitionCells(some_lines):
 
 
-    return sorted_words
+    if not some_lines:
+        return []
+
+    if len(some_lines) == 1:
+        return some_lines[0]
+
+    spaces_between_lines = []
+
+    for line_index in range(len(some_lines) - 1):
+        spaces_between_lines.append(findHeightOfLine(some_lines[line_index + 1]) - findHeightOfLine(some_lines[line_index]))
+
+    index_of_split_line = spaces_between_lines.index(max(spaces_between_lines))
+    return some_lines[:index_of_split_line + 1], some_lines[index_of_split_line + 1:]
+
+
+
+def findHeightOfLine(line_of_words):
+
+    find_average_height_word = lambda word: average((word['boundingPoly']['vertices'][2]["y"],
+                                               word['boundingPoly']['vertices'][3]["y"]))
+    average_height_words = [find_average_height_word(word) for word in line_of_words]
+
+    return average(average_height_words)
 
 
 
@@ -162,6 +212,89 @@ def closestRectangleToPoint(point, rectagnles):
 
 
 
+
+def parseGoogleText(google_text_json):
+    response_json = json.loads(google_text_json)
+
+    sizes = response_json["responses"][0]["textAnnotations"][0]["boundingPoly"]["vertices"]
+
+    width = int(sizes[1]["x"]) - int(sizes[0]["x"])
+    start_x = sizes[0]["x"]
+    height = int(sizes[2]["y"]) - int(sizes[1]["y"])
+    start_y = sizes[1]["y"]
+
+    # In those linear lines,
+    # x value is the pixel on the image(upon a single axis),
+    # y value is the square of the pixel(upon that axis)
+    squareX = Linearline(-COLS, width, start_x, COLS)
+    squareY = Linearline(ROWS, height, start_y, 0)
+
+    # Change to squares instead of actual x and y values
+    rows = []
+    for word in (response_json["responses"][0]["textAnnotations"])[1:]:
+        x, y = getDimensionAverage(word)
+        x = squareX.y(x)
+        y = squareY.y(y)
+        rows.append({'sqaure': {"x": x, "y": y},
+                     'boundingPoly': word['boundingPoly'],
+                     'description': word['description']})
+
+    sortSquares = lambda item: item["sqaure"]["x"] * 100 + item["sqaure"]["y"]
+
+    groupToSqaures = groupby(sorted(rows, key=sortSquares), key=sortSquares, )
+
+    json_result = []
+
+    # Group Each square in tashetz
+    # key is garbage, don't use it!
+    for key, text in groupToSqaures:
+
+        lines = getLinesInSquare(list(text), squareX, squareY)
+
+        try:
+            x_square, y_square = lines[0]["sqaure"]["x"], lines[0]["sqaure"]["y"]
+
+        #TypeError exception may be thrown because lines is two dimesional because insead of one
+        except TypeError:
+            x_square, y_square = lines[0][0]["sqaure"]["x"], lines[0][0]["sqaure"]["y"]
+
+
+        # Only One definition in cels
+        if (x_square, y_square) not in DOUBLE_DEFINITION_SQUARES:
+
+            # We need to "smash" the two dimesional text into one dimension
+            flat_lines = [item for sublist in lines for item in sublist]
+            new_text = [single_word["description"] for single_word in flat_lines]
+            all_text = reduce(lambda row, word: row + " " + word, new_text)
+
+            json_result.append([{
+                "x": x_square,
+                "y": y_square,
+                "text": all_text.encode("utf-8")
+            }])
+
+        else:
+
+            two_definitions = []
+
+            for block in findTwoDefinitionCells(lines):
+                # We need to "smash" the two dimesional text into one dimension
+                flat_lines = [item for sublist in block for item in sublist]
+                new_text = [single_word["description"] for single_word in flat_lines]
+                all_text = reduce(lambda row, word: row + " " + word, new_text)
+
+                two_definitions.append({
+                    "x": x_square,
+                    "y": y_square,
+                    "text": all_text.encode("utf-8")
+                })
+
+            json_result.append(two_definitions)
+
+
+
+    return json_result
+
 def main():
 
     verifyFilesIntegrity()
@@ -170,59 +303,14 @@ def main():
     for google_text in getParseImageData():
 
 
+        Save_Analysis_Files_To_Directory(LIST_IMAGES[indexGoogleDataRunning],
+                                         google_text,
+                                         json.dumps(parseGoogleText(google_text), ensure_ascii=False))
 
-        response_json = json.loads(google_text)
-
-        sizes = response_json["responses"][0]["textAnnotations"][0]["boundingPoly"]["vertices"]
-
-        width = int(sizes[1]["x"]) - int(sizes[0]["x"])
-        start_x = sizes[0]["x"]
-        height = int(sizes[2]["y"]) - int(sizes[1]["y"])
-        start_y = sizes[1]["y"]
-
-
-        squareX = Linearline(COLS,width, start_x, 0)
-        squareY = Linearline(ROWS,height, start_y, 0)
-
-
-        response_json_to_sort = (response_json["responses"][0]["textAnnotations"])[1:]
-
-        # Sort X and Y Coordinates in values
-        line_list = sorted(response_json_to_sort, key=sortListOfWords)
-
-        # Change to squares instead of actual x and y values
-        rows = []
-        for word in line_list:
-            x ,y  = getDimensionAverage(word)
-            x = squareX.y(x)
-            y = squareY.y(y)
-            rows.append({'sqaure': (x,y),
-                         'boundingPoly': word['boundingPoly'],
-                         'description' : word['description'].encode("utf8")})
-
-        string = ""
-
-
-        groupToSqaures = groupby(sorted(rows, key=lambda item: item['sqaure']), key=lambda item : item['sqaure'])
-
-        print "GroupBy Result:"
-
-        sorted_words
-        # Group Each square in tashetz
-        for sqaure, text in groupToSqaures:
-
-            text = sortWordsInsideSquare(list(text), squareX, squareY)
-            new_text = [single_word["description"] for single_word in text]
-            all_text = reduce(lambda row, word: row + " " + word, new_text)
-            string += "({0}, {1}) : {2}\n".format(sqaure[0], sqaure[1], all_text)
-
+        print ( json.dumps(parseGoogleText(google_text), ensure_ascii=False))
 
         print "done."
 
-
-        Save_Analysis_Files_To_Directory(LIST_IMAGES[indexGoogleDataRunning],
-                                         google_text,
-                                         string)
         indexGoogleDataRunning += 1
 
 

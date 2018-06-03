@@ -1,5 +1,6 @@
 import math
 
+
 def average(integers):
     return sum(integers) / len(integers)
 
@@ -17,6 +18,7 @@ def middlePoint(p1, p2):
 
 def maxi(a, b):
     return a if a > b else b
+
 
 def mini(a, b):
      return a if a < b else b

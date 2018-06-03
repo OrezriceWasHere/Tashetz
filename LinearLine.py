@@ -1,5 +1,4 @@
 from __future__ import division
-import Mathematics
 from Mathematics import *
 
 class Linearline:
@@ -41,13 +40,11 @@ class Linearline:
             x_intersection = (other_line.y(0) - self.y(0)) / (self.derrative - other_line.derrative)
             intersection_point = {"x": x_intersection, "y": self.y(x_intersection)}
 
-
-
-        if intersection_point['y'] > Mathematics.maxi(p1['y'], p2['y']) or \
-           intersection_point['y'] < Mathematics.mini(p1['y'], p2['y']) or \
-                intersection_point['x'] > Mathematics.maxi(p1['x'], p2['x']) or \
-                intersection_point['x'] < Mathematics.mini(p1['x'], p2['x']):
+        if intersection_point['y'] > maxi(p1['y'], p2['y']) or \
+           intersection_point['y'] < mini(p1['y'], p2['y']) or \
+                intersection_point['x'] > maxi(p1['x'], p2['x']) or \
+                intersection_point['x'] < mini(p1['x'], p2['x']):
 
             return Linearline.NO_INTERSECTION
 
-        return Mathematics.distance(intersection_point, {"x": self.x0, "y": self.y0})
+        return distance(intersection_point, {"x": self.x0, "y": self.y0})

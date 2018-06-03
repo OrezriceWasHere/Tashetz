@@ -53,7 +53,8 @@ def Copy_Image_To_Analysis_Directory(imageLocation, directoryLocation):
 
     print "copying image " + imageLocation + " to " + directoryLocation + " ..."
 
-    copy2(imageLocation, directoryLocation)
+    if not os.path.exists(os.path.join(directoryLocation, os.path.basename(imageLocation))):
+        copy2(imageLocation, directoryLocation)
 
     print "done."
 
