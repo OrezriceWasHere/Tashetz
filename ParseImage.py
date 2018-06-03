@@ -267,11 +267,11 @@ def parseGoogleText(google_text_json):
             new_text = [single_word["description"] for single_word in flat_lines]
             all_text = reduce(lambda row, word: row + " " + word, new_text)
 
-            json_result.append([{
+            json_result.append({
                 "x": x_square,
                 "y": y_square,
-                "text": all_text.encode("utf-8")
-            }])
+                "text": [all_text.encode("utf-8")]
+            })
 
         else:
 
@@ -283,13 +283,13 @@ def parseGoogleText(google_text_json):
                 new_text = [single_word["description"] for single_word in flat_lines]
                 all_text = reduce(lambda row, word: row + " " + word, new_text)
 
-                two_definitions.append({
-                    "x": x_square,
-                    "y": y_square,
-                    "text": all_text.encode("utf-8")
-                })
+                two_definitions.append(all_text.encode("utf-8"))
 
-            json_result.append(two_definitions)
+            json_result.append({
+                "x": x_square,
+                "y": y_square,
+                "text": [two_definitions]
+            })
 
 
 
