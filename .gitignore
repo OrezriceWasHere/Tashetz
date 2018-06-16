@@ -106,3 +106,4 @@ ENV/
 .bat
 .ps10
 test.py
+TashetzImageParser/Settings.py
