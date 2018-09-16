@@ -1,0 +1,13 @@
+C:\Users\Or\source\repos\TashetzSolver\TashetzSolver\obj\Debug\TashetzSolver.csproj.CoreCompileInputs.cache
+C:\Users\Or\source\repos\TashetzSolver\TashetzSolver\bin\Debug\TashetzSolver.exe.config
+C:\Users\Or\source\repos\TashetzSolver\TashetzSolver\bin\Debug\TashetzSolver.exe
+C:\Users\Or\source\repos\TashetzSolver\TashetzSolver\bin\Debug\TashetzSolver.pdb
+C:\Users\Or\source\repos\TashetzSolver\TashetzSolver\obj\Debug\TashetzSolver.exe
+C:\Users\Or\source\repos\TashetzSolver\TashetzSolver\obj\Debug\TashetzSolver.pdb
+C:\Users\Or\source\repos\TashetzSolver\TashetzSolver\bin\Debug\Newtonsoft.Json.dll
+C:\Users\Or\source\repos\TashetzSolver\TashetzSolver\bin\Debug\Newtonsoft.Json.xml
+C:\Users\Or\source\repos\TashetzSolver\TashetzSolver\obj\Debug\TashetzSolver.csprojAssemblyReference.cache
+C:\Users\Or\source\repos\TashetzSolver\TashetzSolver\obj\Debug\TashetzSolver.csproj.CopyComplete
+C:\Users\Or\source\repos\TashetzSolver\TashetzSolver\bin\Debug\HtmlAgilityPack.dll
+C:\Users\Or\source\repos\TashetzSolver\TashetzSolver\bin\Debug\HtmlAgilityPack.pdb
+C:\Users\Or\source\repos\TashetzSolver\TashetzSolver\bin\Debug\HtmlAgilityPack.xml
