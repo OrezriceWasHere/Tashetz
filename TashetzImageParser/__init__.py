@@ -5,6 +5,7 @@ import json
 
 app = flask.Flask(__name__)
 
+
 @app.route('/getTashetzParseImage', methods=['POST'])
 def getParseImageTashetz():
 
@@ -19,6 +20,11 @@ def getParseImageTashetz():
     if image_data is not None:
         google_analsis_data = OCRhandler.parseTashets(image_bytes=image_data)
 
-    return json.dumps({"result" : ParseImage.parseGoogleText(google_analsis_data)}), 200
+    return json.dumps(ParseImage.parseGoogleText(google_analsis_data)), 200
 
-app.run(port=80, debug=True)
+
+@app.route('/', methods=['GET'])
+def connectToServer():
+    return "Hello World!\nuse POST /getTashetzParseImage"
+
+app.run(port=8080, debug=True)

@@ -2,7 +2,6 @@ from __future__ import division
 
 from itertools import groupby
 from LinearLine import *
-from os.path import join
 from FileHandler import *
 from Mathematics import *
 import OCRhandler
@@ -18,15 +17,67 @@ IS_READING_FROM_GOOGLE = False
 # Tashetz dimensions constants
 ROWS = 12
 COLS = 15
+UNRESOLVED_TEXT = "UNRESOLVED"
 
 # All cells with two definitions
 DOUBLE_DEFINITION_SQUARES = (
-    (11, 4),
-    (9, 8),
-    (9, 1),
-    (7, 3),
-    (4, 1),
-    (2, 9)
+
+    {"x": 11, "y": 4, "length_left": 4, "length_down": 2},
+    {"x": 9, "y": 8, "length_left": 3, "length_down": 3},
+    {"x": 9, "y": 1, "length_left": 4, "length_down": 2},
+    {"x": 7, "y": 3, "length_left": 6, "length_down": 3},
+    {"x": 4, "y": 1, "length_left": 4, "length_down": 2},
+    {"x": 2, "y": 9, "length_left": 3, "length_down": 2}
+
+)
+
+ONE_DEFINITON_SQUARES = (
+
+    {"x": 0, "y": 0, "start_loc_x": 1, "start_loc_y": 0, "dir": "down", "length": 7},
+    {"x": 0, "y": 1, "start_loc_x": 1, "start_loc_y": 1, "dir": "left", "length": 3},
+    {"x": 0, "y": 3, "start_loc_x": 0, "start_loc_y": 4, "dir": "left", "length": 5},
+    {"x": 0, "y": 4, "start_loc_x": 0, "start_loc_y": 5, "dir": "left", "length": 4},
+    {"x": 0, "y": 6, "start_loc_x": 1, "start_loc_y": 6, "dir": "left", "length": 5},
+    {"x": 0, "y": 7, "start_loc_x": 0, "start_loc_y": 8, "dir": "left", "length": 4},
+    {"x": 0, "y": 9, "start_loc_x": 0, "start_loc_y": 10, "dir": "left", "length": 4},
+    {"x": 0, "y": 11, "start_loc_x": 1, "start_loc_y": 11, "dir": "left", "length": 2},
+    {"x": 2, "y": 0, "start_loc_x": 3, "start_loc_y": 0, "dir": "down", "length": 11},
+    {"x": 2, "y": 2, "start_loc_x": 3, "start_loc_y": 2, "dir": "left", "length": 8},
+    {"x": 2, "y": 4, "start_loc_x": 3, "start_loc_y": 4, "dir": "down", "length": 4},
+    {"x": 3, "y": 11, "start_loc_x": 4, "start_loc_y": 11, "dir": "left", "length": 2},
+    {"x": 4, "y": 0, "start_loc_x": 5, "start_loc_y": 0, "dir": "down", "length": 3},
+    {"x": 4, "y": 4, "start_loc_x": 5, "start_loc_y": 4, "dir": "left", "length": 4},
+    {"x": 4, "y": 5, "start_loc_x": 5, "start_loc_y": 5, "dir": "left", "length": 3},
+    {"x": 4, "y": 7, "start_loc_x": 5, "start_loc_y": 7, "dir": "left", "length": 2},
+    {"x": 4, "y": 8, "start_loc_x": 5, "start_loc_y": 10, "dir": "left", "length": 3},
+    {"x": 5, "y": 3, "start_loc_x": 5, "start_loc_y": 4, "dir": "down", "length": 8},
+    {"x": 6, "y": 0, "start_loc_x": 6, "start_loc_y": 1, "dir": "down", "length": 5},
+    {"x": 6, "y": 6, "start_loc_x": 6, "start_loc_y": 7, "dir": "down", "length": 2},
+    {"x": 6, "y": 9, "start_loc_x": 7, "start_loc_y": 9, "dir": "left", "length": 4},
+    {"x": 6, "y": 11, "start_loc_x": 7, "start_loc_y": 11, "dir": "left", "length": 3},
+    {"x": 7, "y": 0, "start_loc_x": 7, "start_loc_y": 1, "dir": "down", "length": 2},
+    {"x": 7, "y": 7, "start_loc_x": 7, "start_loc_y": 8, "dir": "down", "length": 4},
+    {"x": 8, "y": 0, "start_loc_x": 8, "start_loc_y": 1, "dir": "down", "length": 4},
+    {"x": 8, "y": 5, "start_loc_x": 9, "start_loc_y": 5, "dir": "left", "length": 4},
+    {"x": 8, "y": 6, "start_loc_x": 9, "start_loc_y": 6, "dir": "left", "length": 6},
+    {"x": 8, "y": 7, "start_loc_x": 8, "start_loc_y": 8, "dir": "down", "length": 2},
+    {"x": 8, "y": 10, "start_loc_x": 9, "start_loc_y": 10, "dir": "left", "length": 2},
+    {"x": 9, "y": 0, "start_loc_x": 10, "start_loc_y": 0, "dir": "down", "length": 4},
+    {"x": 9, "y": 4, "start_loc_x": 9, "start_loc_y": 5, "dir": "down", "length": 3},
+    {"x": 10, "y": 4, "start_loc_x": 10, "start_loc_y": 5, "dir": "down", "length": 2},
+    {"x": 10, "y": 11, "start_loc_x": 11, "start_loc_y": 11, "dir": "left", "length": 11},
+    {"x": 11, "y": 0, "start_loc_x": 12, "start_loc_y": 0, "dir": "down", "length": 7},
+    {"x": 11, "y": 2, "start_loc_x": 12, "start_loc_y": 2, "dir": "left", "length": 3},
+    {"x": 11, "y": 9, "start_loc_x": 12, "start_loc_y": 9, "dir": "left", "length": 3},
+    {"x": 11, "y": 10, "start_loc_x": 12, "start_loc_y": 10, "dir": "left", "length": 3},
+    {"x": 12, "y": 7, "start_loc_x": 12, "start_loc_y": 8, "dir": "down", "length": 4},
+    {"x": 13, "y": 0, "start_loc_x": 13, "start_loc_y": 1, "dir": "down", "length": 4},
+    {"x": 13, "y": 5, "start_loc_x": 13, "start_loc_y": 6, "dir": "down", "length": 2},
+    {"x": 13, "y": 8, "start_loc_x": 13, "start_loc_y": 9, "dir": "down", "length": 3},
+    {"x": 14, "y": 0, "start_loc_x": 14, "start_loc_y": 1, "dir": "down", "length": 2},
+    {"x": 14, "y": 3, "start_loc_x": 14, "start_loc_y": 4, "dir": "down", "length": 3},
+    {"x": 14, "y": 7, "start_loc_x": 14, "start_loc_y": 8, "dir": "down", "length": 4},
+
 )
 
 def readLine(dict_word):
@@ -97,7 +148,6 @@ def getLinesInSquare(list_words_inside_square, square_x_line, square_y_line):
 
 
     import copy
-    hard_copy_list_words_inside_square = copy.deepcopy(list_words_inside_square)
 
     unsorted_words = list_words_inside_square
     sorted_words = []
@@ -213,12 +263,25 @@ def closestRectangleToPoint(point, rectagnles):
 
       return sorted(calculate_distance, key=lambda item: item["distance"])[0]["word"]
 
+## Find in double definition cells a square with specific x and y values
+def double_definition_by_x_and_y(x_square, y_square):
+    cell = [dict for dict in DOUBLE_DEFINITION_SQUARES if dict["x"] == x_square and dict["y"] == y_square]
+    return cell[0] if len(cell) > 0 else None
+
+## Find in one definition cells a square with specific x and y values
+def definition_by_x_and_y(x_square, y_square):
+     cell = [dict for dict in ONE_DEFINITON_SQUARES if dict["x"] == x_square and dict["y"] == y_square]
+     return cell[0] if len(cell) > 0 else None
 
 
+def item_in_json_result(x, y, json_result):
+    for line in json_result:
+        if line["x"] == x and line["y"] == y:
+            return True
+    return False
 
 def parseGoogleText(google_text_json):
     response_json = json.loads(google_text_json)
-
     sizes = response_json["responses"][0]["textAnnotations"][0]["boundingPoly"]["vertices"]
 
     width = int(sizes[1]["x"]) - int(sizes[0]["x"])
@@ -262,10 +325,11 @@ def parseGoogleText(google_text_json):
         except TypeError:
             x_square, y_square = lines[0][0]["sqaure"]["x"], lines[0][0]["sqaure"]["y"]
 
-
+        one_definition_cell = definition_by_x_and_y(x_square, y_square)
+        two_definition_cell = double_definition_by_x_and_y(x_square, y_square)
 
         # One definition in specific cell
-        if (x_square, y_square) not in DOUBLE_DEFINITION_SQUARES:
+        if one_definition_cell is not None:
 
             # We need to "smash" the two dimesional text into one dimension
 
@@ -276,14 +340,20 @@ def parseGoogleText(google_text_json):
             json_result.append({
                 "x": x_square,
                 "y": y_square,
-                "text": [all_text.encode("utf-8")]
+                "text": [all_text.encode("utf-8")],
+                "start_loc_x": one_definition_cell["start_loc_x"],
+                "start_loc_y": one_definition_cell["start_loc_y"],
+                "dir": one_definition_cell["dir"],
+                "length": one_definition_cell["length"]
             })
 
-        else:
+        elif two_definition_cell is not None:
 
             two_definitions = []
+            find_two_definitions_cells_result = findTwoDefinitionCells(lines)
+            found_two_definitions = len(find_two_definitions_cells_result) > 1
 
-            for block in findTwoDefinitionCells(lines):
+            for block in find_two_definitions_cells_result:
 
                 # We need to "smash" the two dimesional text into one dimension
                 if len(block) != 1:
@@ -299,8 +369,27 @@ def parseGoogleText(google_text_json):
             json_result.append({
                 "x": x_square,
                 "y": y_square,
-                "text": [two_definitions]
+                "text": two_definitions if found_two_definitions else two_definitions + [UNRESOLVED_TEXT],
+                "length_left": two_definition_cell["length_left"],
+                "length_down": two_definition_cell["length_down"]
             })
+
+
+
+            ##Make sure to send "empty" definitions
+    for cell in ONE_DEFINITON_SQUARES:
+        if not item_in_json_result(cell["x"], cell["y"], json_result):
+            cell_to_insert = cell.copy()
+            cell_to_insert["text"] = [UNRESOLVED_TEXT]
+            json_result.append(cell_to_insert)
+
+    for cell in DOUBLE_DEFINITION_SQUARES:
+        cell_to_insert = cell.copy()
+        cell_to_insert["text"] = [UNRESOLVED_TEXT, UNRESOLVED_TEXT]
+        json_result.append(cell_to_insert)
+
+
+
 
 
 
