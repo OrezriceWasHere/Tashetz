@@ -2,6 +2,8 @@
 __pycache__/
 *.py[cod]
 *$py.class
+.pyc
+__pycahce__
 
 # C extensions
 *.so
@@ -105,12 +107,11 @@ ENV/
 .txt
 .bat
 .ps1
+
 TashetzImageParser/Settings.py
+
 TashetzImageParser/test.py
-.idea/workspace.xml
-.idea/misc.xml
-.idea/inspectionProfiles/Project_Default.xml
-.idea/dictionaries/Or.xml
-TashetzSolver/TashetzSolver/Soultion/Program.cs
-TashetzSolver/TashetzSolver/Soultion/Program.cs
-TashetzSolver/TashetzSolver/Soultion/Program.cs
+
+
+run_server.bat
+Program.cs
