@@ -55,27 +55,23 @@ namespace TashetzSolver.Soultion.HTTPRequests
 
             var converter = JsonConvert.DeserializeObject<ParseTashetzClass[]>(api);
 
-
-            using (StreamWriter outputFile = new StreamWriter(@"C:\Users\Or\Desktop\parse_tashetz.txt"))
+            foreach (var cell in converter)
             {
-                foreach (var cell in converter)
+
+                // Only happens to one definition cell
+                if (cell.text.Count() == 1)
                 {
-
-                    // Only happens to one definition cell
-                    if (cell.text.Count() == 1)
-                    {
-                        cells[cell.x, cell.y] = new StringRiddleCell(cell.start_loc_x, cell.start_loc_y,
-                            Direction.GetDirectionByText(cell.dir), cell.text[0], cell.x, cell.y);
-                    }
-                    else
-                    {
-                        cells[cell.x, cell.y] = new DoubleRiddleCell(cell.text[0],
-                            Direction.LEFT, cell.text[1], Direction.DOWN, cell.x, cell.y);
-                    }
-
-                    outputFile.WriteLine(cell);
-
+                    cells[cell.x, cell.y] = new StringRiddleCell(cell.start_loc_x, cell.start_loc_y,
+                        Direction.GetDirectionByText(cell.dir), cell.text[0], cell.x, cell.y,
+                        cell.length);
                 }
+                else
+                {
+                    cells[cell.x, cell.y] = new DoubleRiddleCell(cell.text[0],
+                        Direction.LEFT, cell.text[1], Direction.DOWN, cell.x, cell.y);
+                }
+
+                
             }
 
             return cells;

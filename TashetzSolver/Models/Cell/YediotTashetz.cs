@@ -10,7 +10,7 @@ namespace TashetzSolver.Models.Cell
 
         private static YediotTashetz tashetz = new YediotTashetz();
 
-        public Cell[,] cells { get; private set; }
+        private Cell[,] cells { get; set; }
 
         private YediotTashetz() {}
 

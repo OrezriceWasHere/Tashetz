@@ -18,7 +18,7 @@ namespace TashetzSolver.Models.Cell
                     "whose type is {1}", type.RiddleQuestionType, riddle.GetType()));
             }
             this.QuestionType = type;
-            this.Riddle = Riddle;
+            this.Riddle = riddle;
         }
 
         

@@ -13,12 +13,17 @@ namespace TashetzSolver.Models.Cell
 
         public Direction Direction_Riddle { get; private set; }
 
+        // Length is the total amount of cells required for the answer
+        // For two words and aboce, Length would contain the length of the words
+        public int Length { get; private set; }
+
         protected internal StringRiddleCell(int x_riddle_start, int y_riddle_start, Direction dir,
-            string riddle, int x, int y) : base(RiddleType.TEXT_RIDDLE, riddle, x, y)
+            string riddle, int x, int y, int length) : base(RiddleType.TEXT_RIDDLE, riddle, x, y)
         {
             this.Start_loc_x = x_riddle_start;
             this.Start_loc_y = y_riddle_start;
             this.Direction_Riddle = dir;
+            this.Length = length;
         }
 
         public override string ToString()
