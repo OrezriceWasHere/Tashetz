@@ -384,9 +384,10 @@ def parseGoogleText(google_text_json):
             json_result.append(cell_to_insert)
 
     for cell in DOUBLE_DEFINITION_SQUARES:
-        cell_to_insert = cell.copy()
-        cell_to_insert["text"] = [UNRESOLVED_TEXT, UNRESOLVED_TEXT]
-        json_result.append(cell_to_insert)
+        if not item_in_json_result(cell["x"], cell["y"], json_result):
+            cell_to_insert = cell.copy()
+            cell_to_insert["text"] = [UNRESOLVED_TEXT, UNRESOLVED_TEXT]
+            json_result.append(cell_to_insert)
 
 
 

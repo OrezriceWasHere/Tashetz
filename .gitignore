@@ -115,3 +115,4 @@ TashetzImageParser/test.py
 
 run_server.bat
 Program.cs
+*.xml
