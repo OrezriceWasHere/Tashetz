@@ -2,7 +2,6 @@ from __future__ import division
 
 from itertools import groupby
 from LinearLine import *
-from FileHandler import *
 from Mathematics import *
 import OCRhandler
 import json
