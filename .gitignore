@@ -158,3 +158,5 @@ UpgradeLog*.htm
 .ps10
 test.py
 TashetzImageParser/Settings.py
+
+*/.vs
