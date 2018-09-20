@@ -4,6 +4,7 @@ using System.Net;
 using System.Threading.Tasks;
 using System.Linq;
 using System.Collections.Generic;
+using System.Web;
 
 namespace TashetzSolver.Soultion.HTTPRequests
 {
