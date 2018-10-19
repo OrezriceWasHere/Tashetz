@@ -19,7 +19,7 @@ namespace TashetzSolver.Soultion.HTTPRequests
     {
         public static readonly string UNRESOLVED_STRING = "UNRESOLVED";
 
-        public static string PostParseTashetz(string file_64_encoded)
+        public static async Task<string> PostParseTashetz(string file_64_encoded)
         {
             using (WebClient client = new WebClient())
             {
@@ -31,15 +31,16 @@ namespace TashetzSolver.Soultion.HTTPRequests
                 };
 
                 
-                byte[] response = client.UploadValues("http://localhost:8080/getTashetzParseImage", parameters);
+
+                byte[] response = await client.UploadValuesTaskAsync("http://localhost:8080/getTashetzParseImage", parameters);
 
                 return System.Text.Encoding.UTF8.GetString(response);
             }
         }
 
-        public static string PostParseTashezFromFile(string file_name)
+        public static async Task<string> PostParseTashezFromFile(string file_name)
         {
-            return PostParseTashetz(ImageHandler.EncodeImageBase64(file_name));
+            return await PostParseTashetz(ImageHandler.EncodeImageBase64(file_name));
         }
 
         public Cell[,] ReadTashetzFromApi(string api)
@@ -67,8 +68,10 @@ namespace TashetzSolver.Soultion.HTTPRequests
                 }
                 else
                 {
-                    cells[cell.x, cell.y] = new DoubleRiddleCell(cell.text[0],
-                        Direction.LEFT, cell.text[1], Direction.DOWN, cell.x, cell.y);
+                    cells[cell.x, cell.y] = new DoubleRiddleCell(
+                        cell.text[0],Direction.LEFT, (int)cell.length_left,
+                        cell.text[1], Direction.DOWN, (int)cell.length_down,
+                        cell.x, cell.y);
                 }
 
                 

@@ -21,6 +21,7 @@
     <DefineConstants>DEBUG;TRACE</DefineConstants>
     <ErrorReport>prompt</ErrorReport>
     <WarningLevel>4</WarningLevel>
+    <LangVersion>latest</LangVersion>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
     <PlatformTarget>AnyCPU</PlatformTarget>
@@ -66,6 +67,7 @@
     <Compile Include="Soultion\HTTPRequests\ParseTashetz.cs" />
     <Compile Include="Soultion\HTTPRequests\ParseTashetzClass.cs" />
     <Compile Include="Soultion\Solver\RegexHelper.cs" />
+    <Compile Include="Soultion\Solver\SolutionByParts.cs" />
   </ItemGroup>
   <ItemGroup>
     <None Include="App.config" />

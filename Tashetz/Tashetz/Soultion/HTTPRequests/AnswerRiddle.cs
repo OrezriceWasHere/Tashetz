@@ -205,7 +205,7 @@ namespace TashetzSolver.Soultion.HTTPRequests
         // get rid of those annoying explnations 
         // answer is sometimes like:
         // solution of 4 letters : AAAA (explnations), BBBB (explnation), CCCC
-        private static string RemoveExplnations(string text)
+        public static string RemoveExplnations(string text)
         {
 
             // Validate we have a good string

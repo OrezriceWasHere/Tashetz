@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Generic;
 using TashetzSolver.Models.Interafaces;
 
 namespace TashetzSolver.Models.Cell
@@ -45,9 +46,11 @@ namespace TashetzSolver.Models.Cell
             return this.cells[x,y];
         }
 
+
         public static void InitFromApi(TashetzReader reader, string google_api)
         {
             YediotTashetz.GetInstance().cells = reader.ReadTashetzFromApi(google_api);
+
         }
     }
 }

@@ -13,6 +13,8 @@ namespace TashetzSolver.Models.Cell
 
         public Direction Direction_Riddle { get; private set; }
 
+        public List<String[]> solution { get; set; }
+
         // Length is the total amount of cells required for the answer
         // For two words and aboce, Length would contain the length of the words
         public int Length { get; private set; }
@@ -24,12 +26,18 @@ namespace TashetzSolver.Models.Cell
             this.Start_loc_y = y_riddle_start;
             this.Direction_Riddle = dir;
             this.Length = length;
+            this.solution = new List<string[]>();
         }
 
         public override string ToString()
         {
             return String.Format("String riddle Cell ({0}, {1}):\n\tRiddle={2}\n\tDir={3}\n\tStartLoc={4}",
                 this.X, this.Y, this.Riddle, this.Direction_Riddle, this.Start_loc_x, this.Start_loc_y);
+        }
+
+        public void AddPossibleSolution(string[] solution)
+        {
+            this.solution.Add(solution);
         }
     }
 }

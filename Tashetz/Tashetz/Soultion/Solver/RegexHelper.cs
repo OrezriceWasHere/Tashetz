@@ -22,27 +22,25 @@ namespace TashetzSolver.TashetzSolver.Soultion.Solver
         // In case the definition does not include specification 
         // of word length, it is assumed to be one word, therefore the total 
         // length of cells is retunred as a one item array
-        public static int[] FindWordsCount(StringRiddleCell cell)
+        public static int[] FindWordsCount(string riddle, int Answer_Length)
         {
             int[] answer;
 
             // Content validation
-            if (cell == null || cell.Riddle == null || cell.Riddle.Equals(ParseTashetz.UNRESOLVED_STRING))
+            if (riddle == null || riddle.Equals(ParseTashetz.UNRESOLVED_STRING))
             {
                 answer = new int[0];
             }
             else
             {
-                string riddle = cell.Riddle.ToString();
 
-               
                 string FIND_COUNT_PATTERN = @"((\d,)+\d)";
                 Regex regex = new Regex(FIND_COUNT_PATTERN);
                 string result = regex.Match(riddle).Value;
 
                 if (String.IsNullOrEmpty(result))
                 {
-                    answer = new int[1] { cell.Length };
+                    answer = new int[1] { Answer_Length };
                 }
 
                 else
@@ -55,7 +53,7 @@ namespace TashetzSolver.TashetzSolver.Soultion.Solver
                     // how many character the answer should include.
                     // The answer cannot contain a number of characters
                     // different from cell.length
-                    if (answer.Sum() != cell.Length)
+                    if (answer.Sum() != Answer_Length)
                     {
                         answer = new int[0];
                     }
